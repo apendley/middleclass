@@ -75,6 +75,23 @@ local function _includeMixin(klass, mixin)
   klass.__mixins[mixin] = true
 end
 
+local function _subclassOf(aClass, other)
+  if not _classes[aClass] or not _classes[other] or aClass.super == nil then return false end
+  return aClass.super == other or _subclassOf(aClass.super, other)
+end
+
+local function _instanceOf(obj, aClass)
+  if not _classes[aClass] or type(obj) ~= 'table' or not _classes[obj.class] then return false end
+  if obj.class == aClass then return true end
+  return _subclassOf(obj.class, aClass)
+end
+
+local function _includes(aClass, mixin)
+  if not _classes[aClass] then return false end
+  if aClass.__mixins[mixin] then return true end
+  return _includes(aClass.super, mixin)
+end
+
 Object = _createClass("Object", nil)
 
 Object.static.__metamethods = { '__add', '__call', '__concat', '__div', '__le', '__lt', 
@@ -112,28 +129,16 @@ function Object.static:include( ... )
   return self
 end
 
+Object.static.subclassOf = _subclassOf
+Object.static.includes = _includes
+
 function Object:initialize() end
 
 function Object:__tostring() return "instance of " .. tostring(self.class) end
 
+Object.instanceOf = _instanceOf
+
 function class(name, super, ...)
   super = super or Object
   return super:subclass(name, ...)
-end
-
-function instanceOf(aClass, obj)
-  if not _classes[aClass] or type(obj) ~= 'table' or not _classes[obj.class] then return false end
-  if obj.class == aClass then return true end
-  return subclassOf(aClass, obj.class)
-end
-
-function subclassOf(other, aClass)
-  if not _classes[aClass] or not _classes[other] or aClass.super == nil then return false end
-  return aClass.super == other or subclassOf(other, aClass.super)
-end
-
-function includes(mixin, aClass)
-  if not _classes[aClass] then return false end
-  if aClass.__mixins[mixin] then return true end
-  return includes(mixin, aClass.super)
 end
