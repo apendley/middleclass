@@ -34,9 +34,9 @@ h1. Features
   ** Mixins are just simple lua tables with functions inside them.
   ** @Class:include(mixin)@ will copy the function definitions of @mixin@ to @class@
   ** If @mixin@ contains a function, called @included@, that function will be invoked right after the functions have been copied. It allows for modifying the class more profoundly.
-  * The function @instance:instanceOf(Class)@ returns @true@ if @instance@ is an instance of the class @Class@
-  * The function @Class:subclassOf(SuperClass)@ returns @true@ if @Class@ is a subclass of @SuperClass@
-  * The function @Class:includes(mixin)@ returns @true@ if @Class@ (or one of its superclasses) includes @mixin@.
+  * @instance:instanceOf(Class)@ returns @true@ if @instance@ is an instance of the class @Class@
+  * @Class:subclassOf(SuperClass)@ returns @true@ if @Class@ is a subclass of @SuperClass@
+  * @Class:includes(mixin)@ returns @true@ if @Class@ (or one of its superclasses) includes @mixin@.
 
 Features left out:
 
